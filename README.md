@@ -1,12 +1,12 @@
 # Back-end
 BackEnd code를 기록해두는 레포지토리입니다.
 
-사용법 
+**** git 사용법 
 
-- branch
+# branch
     - 브랜치 이름 각자 이름 영문으로 만들어 사용 ex) bowon
     - 다른 브랜치 건드리지 않도록 주의 !! (특히 main branch)
-- 커밋 메세지 규칙
+# 커밋 메세지 규칙
     - Feat: 새로운 기능 추가
     - Fix: 버그 수정
     - Docs: 문서 수정
