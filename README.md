@@ -1,7 +1,7 @@
 # Back-end
 BackEnd code를 기록해두는 레포지토리입니다.
 
-## git 사용법 
+## 사용법 
 
 ### branch
     -  브랜치 이름 각자 이름 영문으로 만들어 사용 ex) bowon
