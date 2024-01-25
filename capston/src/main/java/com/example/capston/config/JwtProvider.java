@@ -28,8 +28,9 @@ public class JwtProvider {
         this.userDetailsService = userDetailsService;
         this.secretkey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
-    // Access Token 생성
+
     public String createToken(String loginId, List<String> roles){
+        log.info("Access Token 생성 시작");
         Claims claims = Jwts.claims().setSubject(loginId);
         claims.put("roles", roles);
         Date now = new Date();
@@ -40,30 +41,36 @@ public class JwtProvider {
                 .setExpiration(new Date(now.getTime()+exp))
                 .signWith(secretkey, SignatureAlgorithm.HS256)
                 .compact();
+        log.info("Access Token 생성 완료");
         return token;
     }
     // 권한 확인을 위해 권한 정보 획득
     public Authentication getAuthentication(String accessToken){
+        log.info("토큰 정보 획득 시작");
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUsername(accessToken));
+        log.info("토큰 정보 획득 완료 user:{}", userDetails.getUsername());
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
-    //토큰에 담겨있는 유저의 로그인 아이디 획득
+
     public String getUsername(String accessToken){
+        log.info("회원 정보 추출");
         String info = Jwts.parserBuilder().setSigningKey(secretkey).build().parseClaimsJws(accessToken).getBody().getSubject();
         return info;
     }
 
-    // Authorization Header를 통한 인증
     public String resolveToken(HttpServletRequest request){
-        return request.getHeader("Authorization");
+        log.info("헤더 통해 토큰 추출");
+        return request.getHeader("Authentication");
     }
-    // Access Token 검증
+
     public boolean validateAccessToken(String accessToken){
+        log.info("토큰 유효성 검증 시작");
         try {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretkey).build().parseClaimsJws(accessToken);
-            // 만료 시 false 반환
+            log.info("토큰 유효성 검증 완료");
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
+            log.info("토큰 예외 발생");
             return false;
         }
     }

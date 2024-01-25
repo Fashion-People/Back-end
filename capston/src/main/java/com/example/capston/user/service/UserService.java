@@ -1,9 +1,14 @@
 package com.example.capston.user.service;
 
 import com.example.capston.config.JwtProvider;
+import com.example.capston.exception.DuplicateException;
+import com.example.capston.exception.ErrorCode;
+import com.example.capston.exception.NotFoundException;
+import com.example.capston.exception.UnauthorizedException;
 import com.example.capston.user.dto.UserRequestDto;
 import com.example.capston.user.dto.UserResponseDto;
 import com.example.capston.user.domain.UserEntity;
+import com.example.capston.user.dto.UserUpdateDto;
 import com.example.capston.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.expression.spel.ast.StringLiteral;
@@ -17,7 +22,6 @@ import java.util.*;
 @Service //해당 클래스가 Service로 사용되고 있음을 나타냄
 @RequiredArgsConstructor //생성자 자동 생성. 의존성 주입(생성자 주입) 받음
 public class UserService {
-
     private final UserRepository userRepository; //UserRepository를 사용하여 DB 작업 수행
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
@@ -26,6 +30,12 @@ public class UserService {
    @Transactional
    public UserResponseDto save(UserRequestDto userRequestDto) {
         String encodedPassword = passwordEncoder.encode(userRequestDto.getPassword());
+        if(userRepository.existsByLoginId(userRequestDto.getLoginId())){
+            throw new DuplicateException(ErrorCode.USER_DUPLICATE_LOGINID);
+        }
+        if(userRepository.existsByEmail(userRequestDto.getEmail())){
+            throw new DuplicateException(ErrorCode.User_DUPLICATE_EMAIL);
+        }
         UserEntity userEntity = UserEntity.builder()
                 .userName(userRequestDto.getUserName())
                 .loginId(userRequestDto.getLoginId())
@@ -44,19 +54,29 @@ public class UserService {
     //로그인
     @Transactional
     public String login(String loginId, String password) throws RuntimeException{
-        UserEntity userEntity = userRepository.findByLoginId(loginId).orElseThrow(()->new NoSuchElementException("로그인 실패"));
+        UserEntity userEntity = userRepository.findByLoginId(loginId).orElseThrow(()->new UnauthorizedException(ErrorCode.USER_NOT_FOUND));
         if(!passwordEncoder.matches(password, userEntity.getPassword())){
-            throw new NoSuchElementException("로그인 실패");
+            throw new UnauthorizedException(ErrorCode.PASSWORD_NOT_MATCHED);
         }
-        String token = jwtProvider.createToken(String.valueOf(userEntity.getUserId()),userEntity.getRoles());
+        String token = jwtProvider.createToken(String.valueOf(userEntity.getUserNumber()),userEntity.getRoles());
         return token;
     }
-
     //회원 조회
     @Transactional
-    public UserResponseDto getUser(String loginID){
-        UserEntity userEntity = userRepository.findByLoginId(loginID).orElseThrow(() -> new NoSuchElementException("해당 유저가 존재하지 않습니다"));
+    public UserResponseDto getUser(Long userNumber){
+        UserEntity userEntity = userRepository.findById(userNumber).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
         return UserResponseDto.toDto(userEntity);
+    }
+
+    //회원 수정
+    @Transactional
+    public Long update(Long userNumber, UserUpdateDto userUpdateDto){
+       UserEntity userEntity = userRepository.findById(userNumber).orElseThrow(() -> new NoSuchElementException(""));
+         if(!userEntity.getUsername().equals(userUpdateDto.getUserName())&&userRepository.existsByLoginId(userUpdateDto.getLoginId())){
+           throw new DuplicateException(ErrorCode.USER_DUPLICATE_LOGINID);
+        }
+        userEntity.update(userUpdateDto.getLoginId(),userUpdateDto.getUserName(), userUpdateDto.getEmail(), userUpdateDto.getStyle1(), userUpdateDto.getStyle2(), userUpdateDto.getStyle3(), userUpdateDto.getStyle4());
+        return userNumber;
     }
 
 }

@@ -17,6 +17,6 @@ public class JpaUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-      return userRepository.findByLoginId(loginId).orElseThrow(()->new NoSuchElementException("유저가 존재하지 않습니다."));
+      return userRepository.findById(Long.valueOf(loginId)).orElseThrow(()->new NoSuchElementException("유저가 존재하지 않습니다."));
     }
 }

@@ -19,7 +19,7 @@ public class UserEntity implements UserDetails {
     @Id //기본키
     @Column(name="userNumber")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long userNumber;
 
     @Column(name = "userName")
     private String userName;
@@ -50,8 +50,8 @@ public class UserEntity implements UserDetails {
     private List<String> roles;
 
     @Builder
-    public UserEntity(Long userId, String userName, String loginId, String password, String email, String style1, String style2, String style3, String style4, List<String> roles){
-        this.userId = userId;
+    public UserEntity(Long userNumber, String userName, String loginId, String password, String email, String style1, String style2, String style3, String style4, List<String> roles){
+        this.userNumber = userNumber;
         this.userName = userName;
         this.loginId = loginId;
         this.password = password;
@@ -68,10 +68,10 @@ public class UserEntity implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
-    //사용자의 고유 식별자인 로그인 아이디 반환
+    //사용자의 고유 식별자인 유저 넘버 반환
     @Override
     public String getUsername(){
-        return this.loginId;
+        return this.userNumber.toString();
     }
 
     // 사용자 계정이 만료되었는지 여부를 반환
