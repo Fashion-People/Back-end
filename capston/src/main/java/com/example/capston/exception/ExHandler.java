@@ -30,4 +30,9 @@ public class ExHandler {
         log.error("로그인 실패 : {}", ex.getErrorCode().getMessage());
         return new ResponseEntity<>(ex.getErrorCode().getStatus());
     }
+    @ExceptionHandler(NotPermittedException.class)
+    public ResponseEntity<?> NotPermittedException(NotPermittedException ex){
+        log.error("접근 불가 : {}", ex.getErrorCode().getMessage());
+        return new ResponseEntity<>(ex.getErrorCode().getStatus());
+    }
 }

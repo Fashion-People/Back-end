@@ -1,7 +1,5 @@
 package com.example.capston.user.domain;
 
-import com.example.capston.user.dto.UserRequestDto;
-import com.example.capston.user.dto.UserResponseDto;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,6 +42,9 @@ public class UserEntity implements UserDetails {
 
     @Column(name = "style_4")
     private String style4;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ClothesEntity> clothesEntities = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "user_role")

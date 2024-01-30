@@ -35,13 +35,13 @@ public class JwtProvider {
         claims.put("roles", roles);
         Date now = new Date();
 
+        log.info("Refresh Token 생성 시작");
         String token = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime()+exp))
-                .signWith(secretkey, SignatureAlgorithm.HS256)
+                .setClaims(claims) //정보 저장
+                .setIssuedAt(now) //토큰 발행 시간 정보
+                .setExpiration(new Date(now.getTime()+exp)) //유효시간 설정
+                .signWith(secretkey, SignatureAlgorithm.HS256) //사용할 암호화 알고리즘과 secret값 설정
                 .compact();
-        log.info("Access Token 생성 완료");
         return token;
     }
     // 권한 확인을 위해 권한 정보 획득
@@ -59,7 +59,7 @@ public class JwtProvider {
     }
 
     public String resolveToken(HttpServletRequest request){
-        log.info("헤더 통해 토큰 추출");
+        log.info("Request Header에서 토큰 추출");
         return request.getHeader("Authentication");
     }
 

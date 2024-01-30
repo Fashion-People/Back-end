@@ -24,6 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        //Request Header에서 토큰 꺼냄
         String accessToken = jwtProvider.resolveToken(request);
 
         log.info("토큰 유효성 검증 시작");
