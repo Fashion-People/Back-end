@@ -1,4 +1,4 @@
-package com.example.capston.user.dto;
+package com.example.capston.user.dto.User;
 
 import lombok.*;
 

@@ -31,8 +31,7 @@ public class ClothesEntity {
         this.imageUrl = imageUrl;
         this.user = user;
     }
-    public void upload(String description, String imageUrl){
+    public void update(String description){
         this.description = description;
-        this.imageUrl = imageUrl;
     }
 }

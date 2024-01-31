@@ -1,7 +1,9 @@
 package com.example.capston.user.controller;
 
 import com.example.capston.config.JwtProvider;
-import com.example.capston.user.dto.*;
+import com.example.capston.user.dto.User.UserRequestDto;
+import com.example.capston.user.dto.User.UserResponseDto;
+import com.example.capston.user.dto.User.UserUpdateDto;
 import com.example.capston.user.service.UserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

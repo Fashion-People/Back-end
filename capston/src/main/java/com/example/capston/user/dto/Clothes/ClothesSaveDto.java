@@ -1,4 +1,4 @@
-package com.example.capston.user.dto;
+package com.example.capston.user.dto.Clothes;
 
 import com.example.capston.user.domain.ClothesEntity;
 import com.example.capston.user.repository.ClothesRepository;
