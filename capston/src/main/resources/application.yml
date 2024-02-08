@@ -20,3 +20,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+openweathermap:
+  key: 66c66a7e08f0dc0df1a26f9af58bf39e
+default:
+  latitude: 37.5665
+  longitude: 126.9780
