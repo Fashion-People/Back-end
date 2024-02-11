@@ -45,10 +45,12 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test:5.7.9'
 }
 
-tasks.named('test') {
+/*tasks.named('test') {
+	useJUnitPlatform()
+}*/
+test {
 	useJUnitPlatform()
 }
-
 springBoot {
 	mainClass =  'com.example.capston.CapstonApplication'
 }
