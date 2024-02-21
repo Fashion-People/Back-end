@@ -4,9 +4,9 @@ server:
 spring:
   datasource:
     driver-class-name : com.mysql.cj.jdbc.Driver
-    url : jdbc:mysql://localhost:3306/example?&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url : jdbc:mysql://capstonmysql.cpeq2ag2c7l3.ap-northeast-2.rds.amazonaws.com/capston?&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username : root
-    password : root
+    password : capstonmysql
   thymeleaf:
       cache: false
   mvc:
