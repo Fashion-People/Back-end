@@ -25,7 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url('^$',views.index,name='homepage'),
     url('predictImage',views.predictImage,name='predictImage'),
-    
 ]
 
 #media 파일로 들어간다.
