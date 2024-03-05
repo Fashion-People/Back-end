@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "temp")
 @Getter
 @NoArgsConstructor
-public class TempEntity {
+public class  TempEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tempNumber;

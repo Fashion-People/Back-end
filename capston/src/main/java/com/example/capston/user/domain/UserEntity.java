@@ -20,7 +20,7 @@ public class UserEntity implements UserDetails {
     private Long userNumber;
 
     @Column(name = "userName")
-    private String userName;
+    private String name;
 
     @Column(name = "login_Id")
     private String loginId;
@@ -51,9 +51,9 @@ public class UserEntity implements UserDetails {
     private List<String> roles;
 
     @Builder
-    public UserEntity(Long userNumber, String userName, String loginId, String password, String email, String style1, String style2, String style3, String style4, List<String> roles){
+    public UserEntity(Long userNumber, String name, String loginId, String password, String email, String style1, String style2, String style3, String style4, List<String> roles){
         this.userNumber = userNumber;
-        this.userName = userName;
+        this.name = name;
         this.loginId = loginId;
         this.password = password;
         this.email = email;
@@ -96,8 +96,8 @@ public class UserEntity implements UserDetails {
         return true;
     }
 
-    public void update(String userName, String loginId, String email, String style1, String style2, String style3, String style4){
-        this.userName = userName;
+    public void update(String name, String loginId, String email, String style1, String style2, String style3, String style4){
+        this.name = name;
         this.loginId = loginId;
         this.email = email;
         this.style1 = style1;

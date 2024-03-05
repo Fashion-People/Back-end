@@ -61,11 +61,8 @@ public class ClothesService {
     }
    //옷 데이터 삭제
    @Transactional
-    public void delete(Long number, Long userNumber){
+    public void delete(Long number){
        ClothesEntity clothesEntity = clothesRepository.findById(number).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
-       if(clothesEntity.getUser().getUserNumber() != userNumber){
-           throw new NotPermittedException(ErrorCode.DELETE_NOT_PERMITTED);
-       }
        clothesRepository.delete(clothesEntity);
    }
 }

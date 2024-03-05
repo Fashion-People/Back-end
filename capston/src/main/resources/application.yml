@@ -4,6 +4,8 @@ server:
 spring:
   datasource:
     driver-class-name : com.mysql.cj.jdbc.Driver
+    #localhost:3306로 접속하고, 데이터베이스 example을 사용했을 때
+    #RDS 사용시 ec2 호스트 주소랑 데이터베이스 바꿔야 함
     url : jdbc:mysql://localhost:3306/example?&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username : root
     password : root

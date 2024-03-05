@@ -36,7 +36,7 @@ public class UserService {
             throw new DuplicateException(ErrorCode.User_DUPLICATE_EMAIL);
         }
         UserEntity userEntity = UserEntity.builder()
-                .userName(userRequestDto.getUserName())
+                .name(userRequestDto.getName())
                 .loginId(userRequestDto.getLoginId())
                 .password(encodedPassword)
                 .email(userRequestDto.getEmail())
@@ -71,10 +71,10 @@ public class UserService {
     @Transactional
     public Long update(Long userNumber, UserUpdateDto userUpdateDto){
        UserEntity userEntity = userRepository.findById(userNumber).orElseThrow(() -> new NoSuchElementException(""));
-         if(!userEntity.getUsername().equals(userUpdateDto.getUserName())&&userRepository.existsByLoginId(userUpdateDto.getLoginId())){
+         if(!userEntity.getUsername().equals(userUpdateDto.getName())&&userRepository.existsByLoginId(userUpdateDto.getLoginId())){
            throw new DuplicateException(ErrorCode.USER_DUPLICATE_LOGINID);
         }
-        userEntity.update(userUpdateDto.getLoginId(),userUpdateDto.getUserName(), userUpdateDto.getEmail(), userUpdateDto.getStyle1(), userUpdateDto.getStyle2(), userUpdateDto.getStyle3(), userUpdateDto.getStyle4());
+        userEntity.update(userUpdateDto.getLoginId(),userUpdateDto.getName(), userUpdateDto.getEmail(), userUpdateDto.getStyle1(), userUpdateDto.getStyle2(), userUpdateDto.getStyle3(), userUpdateDto.getStyle4());
         return userNumber;
     }
 

@@ -7,7 +7,7 @@ import com.example.capston.user.domain.UserEntity;
 @Getter
 public class UserResponseDto {
     private Long userNumber; //유저 넘버
-    private String userName; //이름
+    private String name; //이름
     private String loginId; //로그인 아이디
     private String email; //이메일
     private String style1; //취향1
@@ -16,9 +16,9 @@ public class UserResponseDto {
     private String style4; //취향4
 
     @Builder
-    public UserResponseDto(Long userNumber, String userName, String loginId, String email, String style1, String style2, String style3, String style4){
+    public UserResponseDto(Long userNumber, String name, String loginId, String email, String style1, String style2, String style3, String style4){
         this.userNumber = userNumber;
-        this.userName = userName;
+        this.name = name;
         this.loginId = loginId;
         this.email = email;
         this.style1 = style1;
@@ -29,7 +29,7 @@ public class UserResponseDto {
     public static UserResponseDto toDto(UserEntity userEntity){
         return UserResponseDto.builder()
                 .userNumber(userEntity.getUserNumber())
-                .userName(userEntity.getUsername())
+                .name(userEntity.getName())
                 .loginId(userEntity.getLoginId())
                 .email(userEntity.getEmail())
                 .style1(userEntity.getStyle1())

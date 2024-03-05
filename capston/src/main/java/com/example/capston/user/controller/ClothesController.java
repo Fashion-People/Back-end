@@ -1,8 +1,11 @@
 package com.example.capston.user.controller;
 
 import com.example.capston.config.JwtProvider;
+import com.example.capston.user.domain.ClothesEntity;
+import com.example.capston.user.dto.Clothes.ClothesResponseDto;
 import com.example.capston.user.dto.Clothes.ClothesSaveDto;
 import com.example.capston.user.dto.Clothes.ClothesUpdateDto;
+import com.example.capston.user.dto.Clothes.ResponseDto;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -80,7 +83,7 @@ public class ClothesController {
     public ResponseEntity<?> delete(@RequestHeader("Authentication") String token,@PathVariable Long clothesNumber){
         log.info("옷 데이터 삭제 : {}", clothesNumber);
         Long userNumber = Long.valueOf(jwtProvider.getUsername(token));
-        clothesService.delete(clothesNumber, userNumber);
-        return new ResponseEntity<>(clothesService, HttpStatus.NO_CONTENT);
+        clothesService.delete(clothesNumber);
+        return new ResponseEntity<>(new ResponseDto(clothesNumber, "옷 데이터 삭제"), HttpStatus.NO_CONTENT);
     }
 }

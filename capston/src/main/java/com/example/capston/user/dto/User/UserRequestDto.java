@@ -5,7 +5,7 @@ import lombok.*;
 
 @Getter
 public class UserRequestDto { //회원 관련 정보를 필드로 정의
-    private String userName; //이름
+    private String name; //이름
     private String loginId; //로그인 아이디
     private String password;
     private String email;
@@ -15,9 +15,9 @@ public class UserRequestDto { //회원 관련 정보를 필드로 정의
     private String style4;
 
     @Builder
-    public UserRequestDto(String userName, String loginId, String password,String email,
+    public UserRequestDto(String name, String loginId, String password,String email,
                           String style1, String style2, String style3, String style4){
-        this.userName = userName;
+        this.name = name;
         this.loginId = loginId;
         this.password = password;
         this.email = email;
@@ -29,7 +29,7 @@ public class UserRequestDto { //회원 관련 정보를 필드로 정의
 
     public static UserEntity toEntity(UserRequestDto userRequestDto){
         return UserEntity.builder()
-                .userName(userRequestDto.getUserName())
+                .name(userRequestDto.getName())
                 .loginId(userRequestDto.getLoginId())
                 .password(userRequestDto.getPassword())
                 .email(userRequestDto.getEmail())
