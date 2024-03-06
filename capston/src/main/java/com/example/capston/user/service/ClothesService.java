@@ -26,8 +26,8 @@ public class ClothesService {
     private final ClothesRepository clothesRepository;
     //옷 데이터 저장
    @Transactional
-    public Long save(Long number, ClothesSaveDto clothesSaveDto) {
-       UserEntity userEntity = userRepository.findById(number).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+    public Long save(Long userNumber, ClothesSaveDto clothesSaveDto) {
+       UserEntity userEntity = userRepository.findById(userNumber).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
        return clothesRepository.save(ClothesEntity.builder()
                                 .user(userEntity)
                                 .description(clothesSaveDto.getDescription())
@@ -36,23 +36,29 @@ public class ClothesService {
    }
    //옷 데이터 조회
     @Transactional(readOnly = true)
-    public ClothesResponseDto getClothes(Long clothesNumber){
+    public ClothesResponseDto getClothes(Long userNumber, Long clothesNumber){
        ClothesEntity clothesEntity = clothesRepository.findById(clothesNumber).orElseThrow(() -> new NotFoundException(ErrorCode.CLOTHES_NOT_FOUND));
+        if(clothesEntity.getUser().getUserNumber() != userNumber){
+            throw new NotPermittedException(ErrorCode.UPDATE_NOT_PERMITTED);
+        }
        return new ClothesResponseDto(clothesEntity);
     }
    //옷 리스트 조회
    @Transactional(readOnly = true)
-    public List<ClothesListResponseDto> getAllClothes(String loginId){
+    public List<ClothesListResponseDto> getAllClothes(Long userNumber, String loginId){
        UserEntity userEntity = userRepository.findByLoginId(loginId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
        List<ClothesListResponseDto> clothesListResponseDtos =  clothesRepository.findByUser(userEntity)
                                                                 .stream().map(ClothesListResponseDto::new)
                                                                  .collect(Collectors.toList());
+       if(userEntity.getUserNumber() != userNumber){
+           throw new NotPermittedException(ErrorCode.UPDATE_NOT_PERMITTED);
+       }
         return clothesListResponseDtos;
    }
    //옷 데이터 수정
     @Transactional
-    public ClothesResponseDto update(Long number, ClothesUpdateDto clothesUpdateDto, Long userNumber){
-       ClothesEntity clothesEntity = clothesRepository.findById(number).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+    public ClothesResponseDto update(Long clothesNumber, ClothesUpdateDto clothesUpdateDto, Long userNumber){
+       ClothesEntity clothesEntity = clothesRepository.findById(clothesNumber).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
        if(clothesEntity.getUser().getUserNumber() != userNumber){
            throw new NotPermittedException(ErrorCode.UPDATE_NOT_PERMITTED);
        }
@@ -61,8 +67,8 @@ public class ClothesService {
     }
    //옷 데이터 삭제
    @Transactional
-    public void delete(Long number){
-       ClothesEntity clothesEntity = clothesRepository.findById(number).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+    public void delete(Long clothesNumber){
+       ClothesEntity clothesEntity = clothesRepository.findById(clothesNumber).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
        clothesRepository.delete(clothesEntity);
    }
 }
