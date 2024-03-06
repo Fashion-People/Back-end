@@ -1,6 +1,7 @@
 package com.example.capston.user.controller;
 
 import com.example.capston.config.JwtProvider;
+import com.example.capston.user.dto.ResponseDto;
 import com.example.capston.user.dto.User.UserRequestDto;
 import com.example.capston.user.dto.User.UserResponseDto;
 import com.example.capston.user.dto.User.UserUpdateDto;
@@ -29,10 +30,10 @@ public class UserController {
     @ApiOperation(value = "회원 가입", notes = "새로운 회원 정보 입력 API")
     @ApiResponse(code=200, message="회원가입 성공")
     @PostMapping("/join")
-    public ResponseEntity<UserResponseDto> joinUser(@RequestBody UserRequestDto userRequestDto){
+    public ResponseEntity<?> joinUser(@RequestBody UserRequestDto userRequestDto){
         UserResponseDto userResponseDto = userService.save(userRequestDto);
         log.info("회원 가입한 유저 정보 출력");
-        return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDto);
+        return new ResponseEntity<>(new ResponseDto(userResponseDto.getLoginId(), "회원 가입 완료"),HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "로그인", notes = "로그인 API")

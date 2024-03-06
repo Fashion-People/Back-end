@@ -1,11 +1,9 @@
 package com.example.capston.user.controller;
 
 import com.example.capston.config.JwtProvider;
-import com.example.capston.user.domain.ClothesEntity;
-import com.example.capston.user.dto.Clothes.ClothesResponseDto;
 import com.example.capston.user.dto.Clothes.ClothesSaveDto;
 import com.example.capston.user.dto.Clothes.ClothesUpdateDto;
-import com.example.capston.user.dto.Clothes.ResponseDto;
+import com.example.capston.user.dto.ResponseDto;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;

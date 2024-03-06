@@ -1,4 +1,4 @@
-package com.example.capston.user.dto.Clothes;
+package com.example.capston.user.dto;
 
 import lombok.Getter;
 
