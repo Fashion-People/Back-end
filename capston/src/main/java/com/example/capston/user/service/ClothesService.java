@@ -45,8 +45,8 @@ public class ClothesService {
     }
    //옷 리스트 조회
    @Transactional(readOnly = true)
-    public List<ClothesListResponseDto> getAllClothes(Long userNumber, String loginId){
-       UserEntity userEntity = userRepository.findByLoginId(loginId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+    public List<ClothesListResponseDto> getAllClothes(Long userNumber){
+       UserEntity userEntity = userRepository.findById(userNumber).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
        List<ClothesListResponseDto> clothesListResponseDtos =  clothesRepository.findByUser(userEntity)
                                                                 .stream().map(ClothesListResponseDto::new)
                                                                  .collect(Collectors.toList());

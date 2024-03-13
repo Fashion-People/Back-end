@@ -39,16 +39,12 @@ public class ClothesController {
     }
 
     @ApiOperation(value = "옷 리스트 조회", notes = "옷 리스트 조회 API")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authentication", dataType = "String", value = "로그인 후 발급받은 토큰"),
-            @ApiImplicitParam(name = "loginId", dataType = "String", value = "로그인 아이디")
-    })
+    @ApiImplicitParam(name = "Authentication", dataType = "String", value = "로그인 후 발급받은 토큰")
     @ApiResponse(code = 201, message = "옷 리스트 조회 성공")
     @GetMapping("/all/{loginId}")
-    public ResponseEntity<?> getAllClothes(@RequestHeader("Authentication") String token, @PathVariable String loginId){
-        log.info("옷 데이터 전체 조회 : {}", loginId);
+    public ResponseEntity<?> getAllClothes(@RequestHeader("Authentication") String token){
         Long userNumber = Long.valueOf(jwtProvider.getUsername(token));
-        return new ResponseEntity<>(clothesService.getAllClothes(userNumber,loginId), HttpStatus.OK);
+        return new ResponseEntity<>(clothesService.getAllClothes(userNumber), HttpStatus.OK);
     }
 
     @ApiOperation(value = "옷 데이터 조회", notes = "옷 데이터 조회 API")

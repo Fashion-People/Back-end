@@ -25,7 +25,8 @@ public class ClothesEntity {
     @JoinColumn(name = "user_number")
     private UserEntity user; //user 테이블 조인
 
-    @Builder ClothesEntity(Long clothesNumber, String description, String imageUrl, UserEntity user){
+    @Builder
+    public ClothesEntity(Long clothesNumber, String description, String imageUrl, UserEntity user){
         this.clothesNumber = clothesNumber;
         this.description = description;
         this.imageUrl = imageUrl;
