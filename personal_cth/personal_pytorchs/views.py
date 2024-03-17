@@ -44,7 +44,11 @@ labelInfo=json.loads(labelInfo)
 model_path='./models/model_best_epoch3.pth'
 loaded_model = torch.load(model_path)
 
+model_path='./models/style_only_model_best_epoch.pth'
+style_loaded_model = torch.load(model_path)
+
 model = loaded_model
+style_model = style_loaded_model
 #num_features = model.fc.in_features
 # 전이 학습(transfer learning): 모델의 출력 뉴런 수를 3개로 교체하여 마지막 레이어 다시 학습
 #model.fc = nn.Linear(num_features, 17)
@@ -80,14 +84,18 @@ def predictImage(request):
     #image_url = 'https://media.bunjang.co.kr/product/224788073_1_1684729916_w360.jpg'
     
     #반팔
-    #image_url='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQe_OK_L4zyRWYfL7sQXNu0jGzaNlwgfxbvKQ&usqp=CAU' 
+    #image_url='https://image.msscdn.net/images/goods_img/20230329/3188053/3188053_16813635662783_500.jpg' 
     
     #트렌치 코트 
     #image_url='https://media.bunjang.co.kr/product/242654539_1_1699790685_w360.jpg'
 
 
     #블라우스
-    image_url='https://media.bunjang.co.kr/product/124189638_1_1589021004_w360.jpg'
+    #image_url='https://media.bunjang.co.kr/product/124189638_1_1589021004_w360.jpg'
+
+    image_url='https://media.bunjang.co.kr/product/224787189_1_1684729265_w360.jpg'
+
+    #image_url='https://media.bunjang.co.kr/product/246083941_1_1702366323_w360.jpg'
 
     #야상
     #image_url='https://qi-o.qoo10cdn.com/goods_image_big/3/6/9/3/7877613693_l.jpg'
@@ -97,6 +105,7 @@ def predictImage(request):
 
     #image_url='https://m.editail.com/web/product/big/202301/111c3a3ccc4a496fcea47fb1a0fad190.jpg'
     #니트
+    #image_url='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThL2z9FRqnYfqVhp9MfahfmYod4WMSlp8qWA&usqp=CAU'
     #image_url='https://web.joongna.com/cafe-article-data/live/2024/01/15/1035339901/1705305954360_000_DXO5P_main.jpg'
     response = requests.get(image_url)
     image_bytes = response.content
@@ -132,6 +141,8 @@ def predictImage(request):
     with torch.no_grad():
        model.eval()
        output=model(image)
+       style_model.eval()
+       style_output=style_model(image)
     # 이미지 저장하는 것 (현재 파일에 올려둔 이미지)
     #context={'filePathName':filePathName}
        
@@ -174,7 +185,20 @@ def predictImage(request):
         predictImage='후드티'
 
 
+
+    _, preds = torch.max(style_output, 1)
+
+    if (preds[0].item()==0):
+        Style_Image='모던'
+    elif (preds[0].item()==1):
+        Style_Image='스포티'
+    elif (preds[0].item()==2):
+        Style_Image='캐주얼'
+    elif (preds[0].item()==3):
+        Style_Image='페미닌'
+
+
     #context={'filePathName':filePathName,'predictImage':predictImage}
-    context={'filePathName':image_url,'predictImage':predictImage}
+    context={'filePathName':image_url,'predictImage':predictImage,'styleImage':Style_Image}
     return render(request,'index.html',context)
 
