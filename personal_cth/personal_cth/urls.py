@@ -25,25 +25,12 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework.permissions import AllowAny
 
-schema_url_patterns=[
-    path('api/',include('test.urls')),
-]
 
-schema_view = get_schema_view(
-    openapi.Info(
-        title="Django API",
-        default_version='v1',
-        terms_of_service="https://www.google.com/policies/terms/",
-    ),
-    public=True,
-    permission_classes=(permissions.AllowAny,),
-    patterns=schema_url_patterns,
-)
 
 urlpatterns = [
     #장고 부분
     path('admin/', admin.site.urls),
-    path('api/',include('test.urls')),
+    #path('api/',include('test.urls')),
     url('^$',views.index,name='homepage'),
     url('predictImage',views.predictImage,name='predictImage'),
 

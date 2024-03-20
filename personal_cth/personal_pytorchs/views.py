@@ -44,7 +44,7 @@ labelInfo=json.loads(labelInfo)
 model_path='./models/model_best_epoch3.pth'
 loaded_model = torch.load(model_path)
 
-model_path='./models/style_only_model_best_epoch.pth'
+model_path='./models/style_only_model_best_epoch3.pth'
 style_loaded_model = torch.load(model_path)
 
 model = loaded_model
@@ -88,12 +88,15 @@ def predictImage(request):
     
     #트렌치 코트 
     #image_url='https://media.bunjang.co.kr/product/242654539_1_1699790685_w360.jpg'
+    #스포티
+    #image_url='https://d2gfz7wkiigkmv.cloudfront.net/pickin/2/1/2/CDgmsrk7TgSSf6zxrN24ow'
 
-
+    #후드티
+    image_url='https://media.bunjang.co.kr/product/245635633_1_1702023970_w360.jpg'
     #블라우스
     #image_url='https://media.bunjang.co.kr/product/124189638_1_1589021004_w360.jpg'
 
-    image_url='https://media.bunjang.co.kr/product/224787189_1_1684729265_w360.jpg'
+    #image_url='https://media.bunjang.co.kr/product/224787189_1_1684729265_w360.jpg'
 
     #image_url='https://media.bunjang.co.kr/product/246083941_1_1702366323_w360.jpg'
 
