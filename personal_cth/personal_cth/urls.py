@@ -19,9 +19,11 @@ from personal_pytorchs import views
 from django.conf.urls import url
 from django.conf.urls.static import static
 from django.conf import settings 
+
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from rest_framework.permissions import AllowAny
 
 schema_url_patterns=[
     path('api/',include('test.urls')),
@@ -38,13 +40,18 @@ schema_view = get_schema_view(
     patterns=schema_url_patterns,
 )
 
-
 urlpatterns = [
+    #장고 부분
     path('admin/', admin.site.urls),
     path('api/',include('test.urls')),
     url('^$',views.index,name='homepage'),
     url('predictImage',views.predictImage,name='predictImage'),
+
+    #스웨거 부분
+    #url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    #url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    #url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
 
 #media 파일로 들어간다.
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+#urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
