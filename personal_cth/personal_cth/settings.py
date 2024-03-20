@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'personal_pytorchs',
     'drf_yasg',
-    'test',
 ]
 
 MIDDLEWARE = [
