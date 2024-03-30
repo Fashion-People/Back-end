@@ -1,7 +1,16 @@
 package com.example.capston.user.controller;
 
+import com.example.capston.config.JwtProvider;
+import com.example.capston.outfit.service.OutfitService;
+import com.example.capston.result.domain.FigureEntity;
+import com.example.capston.result.dto.OutfitResultDto;
+import com.example.capston.result.dto.UserResultDto;
+import com.example.capston.result.service.ResultService;
+import com.example.capston.result.service.UserResultService;
 import com.example.capston.user.dto.Temp.TempRequestDto;
+import com.example.capston.user.dto.Temp.TempResponseDto;
 import com.example.capston.user.service.TempService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -10,30 +19,58 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/temp")
 @RequiredArgsConstructor
+@Api(tags = "분석 API")
 public class TempController {
     private final TempService tempService;
+    private final ResultService resultService;
+    private final UserResultService userResultService;
+    private final OutfitService outfitService;
+    private final JwtProvider jwtProvider;
 
-    @ApiOperation(value = "옷 데이터 임시 저장", notes = "데이터 임시 저장 API")
-    @ApiImplicitParam(name = "tempRequestDto", dataType = "TempRequestDto", value = "임시로 저장할 데이터")
-    @ApiResponse(code = 200, message = "데이터 임시 저장 성공")
-    @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody TempRequestDto tempRequestDto){
-        log.info("데이터 임시 저장");
-        Long tempNumber = tempService.tempSave(tempRequestDto);
-        return new ResponseEntity<>(tempNumber, HttpStatus.OK);
+    @ApiOperation(value = "옷 적합도 분석", notes = "옷 적합도 분석 API")
+    @ApiImplicitParam(name = "tempRequestDto", dataType = "TempRequestDto", value = "분석할 데이터")
+    @ApiResponse(code = 200, message = "적합도 분석 성공")
+    @PostMapping("/analysis")
+    public ResponseEntity<?> analysis(@RequestBody TempRequestDto tempRequestDto){
+
+        Long userNumber = Long.valueOf(jwtProvider.getUsername(tempRequestDto.getToken()));
+        UserResultDto userResultDto = userResultService.getResult(userNumber);
+        OutfitResultDto outfitResultDto = outfitService.getOutfit(tempRequestDto.getLatitude(), tempRequestDto.getLongitude());
+        log.info("현재 날씨에 맞는 기온별 옷차림 데이터와 사용자의 취향 4개 저장");
+        resultService.save(userResultDto, outfitResultDto);
+
+        List<FigureEntity> list = new ArrayList<>();
+        log.info("인공지능으로 데이터 보내기");
+        Mono<?> resultMono = tempService.callExternalApi(tempRequestDto);
+
+        return resultMono.flatMap(
+                responseDto -> {
+                   Long tempNumber = ((TempResponseDto)responseDto).getTempNumber();
+                    log.info("temp_number : {}", tempNumber);
+                    log.info("인공지능에서 데이터 받아서 적합도 계산하기");
+                    resultService.responseExternalApi();
+                    list.addAll(resultService.getList(tempNumber));
+                    return Mono.just(new ResponseEntity<>(list, HttpStatus.OK));
+                }).onErrorResume(
+                error -> {
+                    return Mono.just(new ResponseEntity<>(list, HttpStatus.INTERNAL_SERVER_ERROR));
+                }).block();
     }
 
-    @ApiOperation(value = "임시로 저장된 데이터 조회", notes = "임시로 저장된 데이터 조회 API")
-    @ApiImplicitParam(name = "tempNumber", dataType = "Long", value = "임시 데이터 번호")
-    @ApiResponse(code = 201, message = "임시로 저장된 데이터 조회 성공")
-    @GetMapping("/{tempNumber}")
-    public ResponseEntity<?> getImage(@PathVariable Long tempNumber){
-        log.info("임시로 저장한 데이터 전체 조회 : {}", tempNumber);
-        return new ResponseEntity<>(tempService.getImages(tempNumber), HttpStatus.OK);
-    }
+   /* @ApiOperation(value = "인공지능 외부 api 테스트용", notes = "테스트 API")
+    @ApiImplicitParam(name = "tempResponseDto", dataType = "TempResponseDto", value = "전달할 데이터")
+    @ApiResponse(code = 200, message = "적합도 분석 성공")
+    @PostMapping("/test/ai")
+    public ResponseEntity<?> get(@RequestBody TempResponseDto tempResponseDto){
+        return new ResponseEntity<>(tempResponseDto, HttpStatus.OK);
+    }*/
+
 }

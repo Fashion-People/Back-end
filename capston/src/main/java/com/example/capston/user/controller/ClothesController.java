@@ -4,10 +4,7 @@ import com.example.capston.config.JwtProvider;
 import com.example.capston.user.dto.Clothes.ClothesSaveDto;
 import com.example.capston.user.dto.Clothes.ClothesUpdateDto;
 import com.example.capston.user.dto.ResponseDto;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +16,7 @@ import com.example.capston.user.service.ClothesService;
 @RestController
 @RequestMapping("/clothes")
 @RequiredArgsConstructor
+@Api(tags = "옷 관련 API")
 public class ClothesController {
 
     private final ClothesService clothesService;
@@ -41,7 +39,7 @@ public class ClothesController {
     @ApiOperation(value = "옷 리스트 조회", notes = "옷 리스트 조회 API")
     @ApiImplicitParam(name = "Authentication", dataType = "String", value = "로그인 후 발급받은 토큰")
     @ApiResponse(code = 201, message = "옷 리스트 조회 성공")
-    @GetMapping("/all/{loginId}")
+    @GetMapping("/all")
     public ResponseEntity<?> getAllClothes(@RequestHeader("Authentication") String token){
         Long userNumber = Long.valueOf(jwtProvider.getUsername(token));
         return new ResponseEntity<>(clothesService.getAllClothes(userNumber), HttpStatus.OK);

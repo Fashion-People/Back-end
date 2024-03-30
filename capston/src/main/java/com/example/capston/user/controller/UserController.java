@@ -6,10 +6,7 @@ import com.example.capston.user.dto.User.UserRequestDto;
 import com.example.capston.user.dto.User.UserResponseDto;
 import com.example.capston.user.dto.User.UserUpdateDto;
 import com.example.capston.user.service.UserService;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor //의존성 주입을 받음. UserService에 대한 멤버 사용 가능
+@Api(tags = "사용자 관련 API")
 public class UserController {
 
     private final UserService userService;

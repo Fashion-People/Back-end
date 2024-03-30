@@ -1,32 +1,48 @@
 package com.example.capston.user.service;
 
-import com.example.capston.exception.ErrorCode;
-import com.example.capston.exception.NotFoundException;
 import com.example.capston.user.domain.TempEntity;
 import com.example.capston.user.dto.Temp.TempRequestDto;
 import com.example.capston.user.dto.Temp.TempResponseDto;
 import com.example.capston.user.repository.TempRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TempService {
     private final TempRepository tempRepository;
+    private final WebClient webClient;
 
-    //데이터 임시 저장
-    @Transactional
-    public Long tempSave(TempRequestDto tempRequestDto){
-        TempEntity tempEntity = TempEntity.builder().imageUrl(tempRequestDto.getImageUrl()).build();
-        return tempRepository.save(tempEntity).getTempNumber();
+    public Mono<?> callExternalApi(TempRequestDto tempRequestDto){
+        log.info("분석할 데이터 저장");
+        TempEntity tempEntity = tempRepository.save(requestDtoToEntity(tempRequestDto));
+        TempResponseDto tempResponseDto = entityToResponseDto(tempEntity);
+        log.info("외부 api 호출");
+        return webClient.post()
+                .uri("/test/get")
+                .bodyValue(tempResponseDto)
+                .retrieve()
+                .bodyToMono(TempResponseDto.class);
     }
 
-    //임시로 저장된 데이터 조회
-    @Transactional(readOnly = true)
-    public TempResponseDto getImages(Long tempNumber){
-        TempEntity tempEntity = tempRepository.findById(tempNumber).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
-        return new TempResponseDto(tempEntity);
+    private TempEntity requestDtoToEntity(TempRequestDto tempRequestDto){
+        TempEntity tempEntity = TempEntity.builder()
+                .tempNumber(tempRequestDto.getTempNumber())
+                .imageUrl(tempRequestDto.getImageUrl())
+                .build();
+        return tempEntity;
+    }
+
+    private TempResponseDto entityToResponseDto(TempEntity tempEntity){
+        TempResponseDto tempResponseDto = TempResponseDto.builder()
+                .tempNumber(tempEntity.getTempNumber())
+                .imageUrl(tempEntity.getImageUrl())
+                .build();
+        return tempResponseDto;
     }
 }
 

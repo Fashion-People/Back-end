@@ -37,17 +37,29 @@ public class WeatherService {
     }
 
     @Transactional(readOnly = true)
+    public String getCondition(String latitude, String longitude){
+        LocalDate today = LocalDate.now();
+        if(weatherRepository.existsByDateAndLatitudeAndLongitude(today,latitude,longitude)){
+            WeatherEntity weatherEntity = weatherRepository.getByDateAndLatitudeAndLongitude(today,latitude,longitude);
+            return weatherEntity.getWeather();
+        }
+        return null;
+    }
+
+    @Transactional(readOnly = true)
     public Double getWeather(String latitude, String longitude) {
-        if(weatherRepository.existsByLatitude(latitude) && weatherRepository.existsByLongitude(longitude)) {
-            WeatherEntity weatherEntity =  weatherRepository.findByLatitude(latitude).orElseThrow(RuntimeException::new);
+        LocalDate today = LocalDate.now(); //현재 날짜 가져오기
+        if(weatherRepository.existsByDateAndLatitudeAndLongitude(today,latitude,longitude)) {
+            WeatherEntity weatherEntity =  weatherRepository.getByDateAndLatitudeAndLongitude(today,latitude,longitude);
             return weatherEntity.getTemperature();
         }
         return null;
     }
 
     private WeatherEntity getDateWeather(String latitude, String  longitude) {
+        LocalDate today = LocalDate.now(); //현재 날짜 가져오기
         log.info("DB에서 date, latitude, longitude를 기반으로 날씨 정보 가져오기");
-        List<WeatherEntity> dateWeatherListFromDB = weatherRepository.findByLatitudeAndLongitude(latitude,longitude);
+        List<WeatherEntity> dateWeatherListFromDB = weatherRepository.findByDateAndLatitudeAndLongitude(today, latitude,longitude);
         if (dateWeatherListFromDB.isEmpty()) { //해당 날짜에 대한 날씨 정보가 없으면
             return getWeatherFromApi(latitude, longitude); //새로운 API를 호출해서 날씨 정보 가져오기
         } else {

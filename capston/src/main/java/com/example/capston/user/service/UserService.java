@@ -33,7 +33,7 @@ public class UserService {
             throw new DuplicateException(ErrorCode.USER_DUPLICATE_LOGINID);
         }
         if(userRepository.existsByEmail(userRequestDto.getEmail())){
-            throw new DuplicateException(ErrorCode.User_DUPLICATE_EMAIL);
+            throw new DuplicateException(ErrorCode.USER_DUPLICATE_EMAIL);
         }
         UserEntity userEntity = UserEntity.builder()
                 .name(userRequestDto.getName())
@@ -53,7 +53,7 @@ public class UserService {
     //로그인
     @Transactional
     public String login(String loginId, String password) throws RuntimeException{
-        UserEntity userEntity = userRepository.findByLoginId(loginId).orElseThrow(()->new UnauthorizedException(ErrorCode.USER_NOT_FOUND));
+        UserEntity userEntity = userRepository.findByLoginId(loginId).orElseThrow(()->new UnauthorizedException(ErrorCode.LOGINID_NOT_FOUND));
         if(!passwordEncoder.matches(password, userEntity.getPassword())){
             throw new UnauthorizedException(ErrorCode.PASSWORD_NOT_MATCHED);
         }

@@ -105,4 +105,6 @@ public class UserEntity implements UserDetails {
         this.style3 = style3;
         this.style4 = style4;
     }
+
+    //사용자의 옷 종류 가져오기
 }
