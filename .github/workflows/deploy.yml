@@ -25,7 +25,6 @@ jobs: #실행될 프로세스 내
       run: |
         aws ec2 authorize-security-group-ingress \
         --group-id ${{ secrets.PROD_AWS_SG_ID }} \
-        --protocol tcp --port 22 \
         --cidr ${{ steps.ip.outputs.ipv4 }}/32
       
     - name: Setup Gradle
