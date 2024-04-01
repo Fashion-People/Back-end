@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface FigureRepository extends JpaRepository<FigureEntity, Long> {
-    List<FigureEntity> findByTempNumber(Long tempNumber);
+    List<FigureEntity> findByTempNumberOrderByIdDesc(Long tempNumber);
+    boolean existsByTempNumber(Long tempNumber);
 }

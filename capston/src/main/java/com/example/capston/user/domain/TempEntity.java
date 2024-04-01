@@ -14,14 +14,18 @@ import java.util.List;
 public class  TempEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long tempNumber;
+    private Long Id;
 
     @Convert(converter = StringListConverter.class)
     @Column(name = "image")
     private List<String> imageUrl;
 
+    @Column(name = "tempNumber")
+    private Long tempNumber;
+
     @Builder
-    public TempEntity(Long tempNumber, List<String> imageUrl){
+    public TempEntity(Long Id,Long tempNumber, List<String> imageUrl){
+        this.Id = Id;
         this.tempNumber = tempNumber;
         this.imageUrl = imageUrl;
     }

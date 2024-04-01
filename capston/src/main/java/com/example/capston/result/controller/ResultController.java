@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/*@RestController
+@RestController
 @RequiredArgsConstructor
 public class ResultController {
 
@@ -24,25 +24,6 @@ public class ResultController {
                 .tempNumber(2L)
                 .build());
 
-        aiRequestDtos.add(AiRequestDto.builder()
-                .clothesNumber(1L)
-                .clothesStyle("string")
-                .clothesType("야상")
-                .tempNumber(2L)
-                .build());
-
-        aiRequestDtos.add(AiRequestDto.builder()
-                .clothesNumber(2L)
-                .clothesStyle("s")
-                .clothesType("무스탕")
-                .tempNumber(2L)
-                .build());
-        aiRequestDtos.add(AiRequestDto.builder()
-                .clothesNumber(3L)
-                .clothesStyle("s")
-                .clothesType("항공 점퍼")
-                .tempNumber(2L)
-                .build());
         return new ResponseEntity<>(aiRequestDtos, HttpStatus.OK);
     }
-}*/
+}
