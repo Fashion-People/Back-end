@@ -58,4 +58,3 @@ jobs: #실행될 프로세스 내
         key: ${{ secrets.PEMKEY }} #ec2 인스턴스 pem key
         script_stop: true
         script: |
-          sh deploy/deploy.sh
