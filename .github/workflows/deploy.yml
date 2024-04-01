@@ -17,6 +17,17 @@ jobs: #실행될 프로세스 내
         java-version: '17'
         distribution: 'temurin'
         
+    - name: Get GitHub Actions IP
+      id: ip
+      uses: haythem/public-ip@v1.2
+      
+    - name: Add Github Actions IP to Security group
+      run: |
+        aws ec2 authorize-security-group-ingress \
+        --group-id ${{ secrets.PROD_AWS_SG_ID }} \
+        --protocol tcp --port 22 \
+        --cidr ${{ steps.ip.outputs.ipv4 }}/32
+      
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
     # gradle wrapper 파일에 실행 권한 부여
