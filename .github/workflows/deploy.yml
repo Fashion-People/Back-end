@@ -16,16 +16,6 @@ jobs: #실행될 프로세스 내
       with:
         java-version: '17'
         distribution: 'temurin'
-        
-    - name: Get GitHub Actions IP
-      id: ip
-      uses: haythem/public-ip@v1.2
-      
-    - name: Add Github Actions IP to Security group
-      run: |
-        aws ec2 authorize-security-group-ingress \
-        --group-id ${{ secrets.PROD_AWS_SG_ID }} \
-        --cidr ${{ steps.ip.outputs.ipv4 }}/32
       
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
@@ -58,3 +48,4 @@ jobs: #실행될 프로세스 내
         key: ${{ secrets.PEMKEY }} #ec2 인스턴스 pem key
         script_stop: true
         script: |
+          sh deploy/deploy.sh
