@@ -18,10 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 
-@Service //해당 클래스가 Service로 사용되고 있음을 나타냄
-@RequiredArgsConstructor //생성자 자동 생성. 의존성 주입(생성자 주입) 받음
+@Service
+@RequiredArgsConstructor
 public class UserService {
-    private final UserRepository userRepository; //UserRepository를 사용하여 DB 작업 수행
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
@@ -35,15 +35,18 @@ public class UserService {
         if(userRepository.existsByEmail(userRequestDto.getEmail())){
             throw new DuplicateException(ErrorCode.USER_DUPLICATE_EMAIL);
         }
+       List<String> styles = Arrays.asList(
+               userRequestDto.getStyle1(),
+               userRequestDto.getStyle2(),
+               userRequestDto.getStyle3(),
+               userRequestDto.getStyle4()
+       );
         UserEntity userEntity = UserEntity.builder()
                 .name(userRequestDto.getName())
                 .loginId(userRequestDto.getLoginId())
                 .password(encodedPassword)
                 .email(userRequestDto.getEmail())
-                .style1(userRequestDto.getStyle1())
-                .style2(userRequestDto.getStyle2())
-                .style3(userRequestDto.getStyle3())
-                .style4(userRequestDto.getStyle4())
+                .style(styles)
                 .roles(Collections.singletonList("USER"))
                 .build();
         userEntity = userRepository.save(userEntity);
@@ -74,7 +77,13 @@ public class UserService {
          if(!userEntity.getUsername().equals(userUpdateDto.getName())&&userRepository.existsByLoginId(userUpdateDto.getLoginId())){
            throw new DuplicateException(ErrorCode.USER_DUPLICATE_LOGINID);
         }
-        userEntity.update(userUpdateDto.getLoginId(),userUpdateDto.getName(), userUpdateDto.getEmail(), userUpdateDto.getStyle1(), userUpdateDto.getStyle2(), userUpdateDto.getStyle3(), userUpdateDto.getStyle4());
+        List<String> styles = Arrays.asList(
+                userUpdateDto.getStyle1(),
+                userUpdateDto.getStyle2(),
+                userUpdateDto.getStyle3(),
+                userUpdateDto.getStyle4()
+        );
+        userEntity.update(userUpdateDto.getLoginId(),userUpdateDto.getName(), userUpdateDto.getEmail(), styles);
         return userNumber;
     }
 

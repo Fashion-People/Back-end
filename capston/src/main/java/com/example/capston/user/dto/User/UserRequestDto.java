@@ -3,6 +3,9 @@ package com.example.capston.user.dto.User;
 import com.example.capston.user.domain.UserEntity;
 import lombok.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Getter
 public class UserRequestDto { //회원 관련 정보를 필드로 정의
     private String name; //이름
@@ -28,15 +31,18 @@ public class UserRequestDto { //회원 관련 정보를 필드로 정의
     }
 
     public static UserEntity toEntity(UserRequestDto userRequestDto){
+        List<String> styles = Arrays.asList(
+                userRequestDto.getStyle1(),
+                userRequestDto.getStyle2(),
+                userRequestDto.getStyle3(),
+                userRequestDto.getStyle4()
+        );
         return UserEntity.builder()
                 .name(userRequestDto.getName())
                 .loginId(userRequestDto.getLoginId())
                 .password(userRequestDto.getPassword())
                 .email(userRequestDto.getEmail())
-                .style1(userRequestDto.getStyle1())
-                .style2(userRequestDto.getStyle2())
-                .style3(userRequestDto.getStyle3())
-                .style4(userRequestDto.getStyle4())
+                .style(styles)
                 .build();
     }
 }

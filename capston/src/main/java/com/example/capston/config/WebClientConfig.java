@@ -40,7 +40,7 @@ public class WebClientConfig {
                 );
 
         WebClient webClient =  WebClient.builder()
-                .baseUrl("http://localhost:8081")
+                .baseUrl("http://13.125.24.157")
                 .exchangeStrategies(exchangeStrategies)
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .filter(logRequest())

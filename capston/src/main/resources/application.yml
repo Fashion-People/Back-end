@@ -6,9 +6,9 @@ spring:
     driver-class-name : com.mysql.cj.jdbc.Driver
     #localhost:3306로 접속하고, 데이터베이스 example을 사용했을 때
     #RDS 사용시 ec2 호스트 주소랑 데이터베이스 바꿔야 함
-    url : jdbc:mysql://capston.cpeq2ag2c7l3.ap-northeast-2.rds.amazonaws.com:3306/capston?&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url : jdbc:mysql://localhost:3306/example?&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username : root
-    password : capstonmysql
+    password : root
   thymeleaf:
       cache: false
   mvc:

@@ -1,11 +1,8 @@
 package com.example.capston.user.dto.Temp;
 
-import com.example.capston.user.domain.TempEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.util.List;
 
 @Getter

@@ -9,16 +9,14 @@ public class FigureDto {
         int figure; //적합도 수치
         String message; // 메시지
         Long tempNumber; //이미지 리스트 번호
-        Long aiId;
 
 
     @Builder
-    public FigureDto(Long clothesNumber, int figure, String message, Long tempNumber, Long aiId){
+    public FigureDto(Long clothesNumber, int figure, String message, Long tempNumber){
         this.clothesNumber = clothesNumber;
         this.figure = figure;
         this.message = message;
         this.tempNumber = tempNumber;
-        this.aiId = aiId;
     }
 
 }

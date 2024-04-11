@@ -10,9 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +21,7 @@ import java.util.Random;
 public class ResultService {
     private final ResultRepository resultRepository;
     private final FigureRepository figureRepository;
-    private final WebClient webClient;
     private final OutfitService outfitService;
-    private Long aiId = 0L;
 
     @Transactional
     public ResultDto save(UserResultDto userResultDto, OutfitResultDto outfitResultDto){
@@ -42,7 +37,7 @@ public class ResultService {
         return resultDto;
     }
 
-    //tempNumber에 해당하는 적합도 결과 리스트 반환
+    //tempNumber에 해당하는 적합도 결과 반환
     public FigureResponseDto get(Long tempNumber) {
         FigureEntity figure = figureRepository.findByTempNumberOrderByIdDesc(tempNumber).get(0);
 
@@ -51,26 +46,8 @@ public class ResultService {
                 .message(figure.getMessage())
                 .clothesNumber(figure.getClothesNumber())
                 .tempNumber(figure.getTempNumber())
-                .aiId(figure.getAiId())
                 .build();
         return figureResponseDto;
-    }
-
-    //외부 api 호출
-    public Mono<List<AiRequestDto>> callExternalApi(){
-        Flux<AiRequestDto> aiRequestDtoFlux =  webClient.get()
-                .uri("/test/get")
-                .retrieve()
-                .bodyToFlux(AiRequestDto.class);
-        return aiRequestDtoFlux.collectList();
-    }
-
-    public Mono<List<FigureDto>> responseExternalApi(Long tempNumber){
-        return callExternalApi()
-                .flatMap(aiRequestDtoList -> {
-                    List<FigureDto> list = fit_calculation(aiRequestDtoList, tempNumber);
-                    return Mono.just(list);
-                });
     }
 
     //적합도 계산 함수
@@ -94,10 +71,10 @@ public class ResultService {
                     .message(figureDto.getMessage())
                     .figure(figureDto.getFigure())
                     .tempNumber(figureDto.getTempNumber())
-                    .aiId(figureDto.getAiId())
                     .build();
             figureRepository.save(figure);
         }
+        log.info("{}", result.get(0).getFigure());
         return result;
     }
 
@@ -106,7 +83,6 @@ public class ResultService {
         int figure = 10;
         String res = "";
         FigureDto figureDto;
-        if(figureRepository.existsByTempNumber(tempNumber)) aiId +=1L;
 
         ResultEntity resultEntity = resultRepository.findById(resultNumber).orElseThrow();
         ResultDto resultDto = ResultDto.toDto(resultEntity);
@@ -155,7 +131,6 @@ public class ResultService {
     }
 
     public List<FigureDto> multipleAiResponse(List<AiRequestDto> aiRequestDtos, Long resultNumber, Long tempNumber) {
-        if(figureRepository.existsByTempNumber(tempNumber)) aiId +=1L;
 
         log.info("올린 이미지가 2개인 경우 실행");
 
@@ -181,11 +156,18 @@ public class ResultService {
                 log.info("결과 수치 : {}", figure);
             }
 
-            if (aiRequestDto.getClothesStyle().equals(resultDto.getStyle1()) || aiRequestDto.getClothesStyle().equals(resultDto.getStyle2()) ||
-                    aiRequestDto.getClothesStyle().equals(resultDto.getStyle3()) || aiRequestDto.getClothesStyle().equals(resultDto.getStyle4())) {
+            //사용자가 입력한 취향의 순위에 따라 적합도 계산
+            if (aiRequestDto.getClothesStyle().equals(resultDto.getStyle1())){
                 figure = figure;
-            } else {
+            }
+            else if (aiRequestDto.getClothesStyle().equals(resultDto.getStyle2())){
                 figure -= 1;
+            }
+            else if (aiRequestDto.getClothesStyle().equals(resultDto.getStyle3())){
+                figure -= 2;
+            }
+            else if (aiRequestDto.getClothesStyle().equals(resultDto.getStyle4())){
+                figure -= 3;
             }
 
             figure *= 10; //퍼센트로 변환
@@ -195,7 +177,6 @@ public class ResultService {
                         .tempNumber(aiRequestDto.getTempNumber())
                         .figure(figure)
                         .message("추천합니다")
-                        .aiId(aiId)
                         .build();
             }
             else if(figure==50){
@@ -204,7 +185,6 @@ public class ResultService {
                         .tempNumber(aiRequestDto.getTempNumber())
                         .figure(figure)
                         .message("보통입니다")
-                        .aiId(aiId)
                         .build();
             }
             else{
@@ -213,13 +193,11 @@ public class ResultService {
                         .tempNumber(aiRequestDto.getTempNumber())
                         .figure(figure)
                         .message("비추천합니다")
-                        .aiId(aiId)
                         .build();
             }
             figureDtos.add(figureDto);
         }
-        
-        log.info("적합도 결과가 가장 높은 Dto가 있는 리스트와 합치기");
+
         List<FigureDto> figureMaxDto = findMaxDto(figureDtos);
         figureDtos.addAll(figureMaxDto);
         
@@ -229,7 +207,7 @@ public class ResultService {
     public List<FigureDto> findMaxDto(List<FigureDto> figureDtos){
         log.info("여러 개의 이미지 중 적합도 결과가 가장 높은 이미지 찾기(중복 포함)");
         List<FigureDto> figureMaxDtos = new ArrayList<>();
-        int figureMax = figureDtos.get(0).getFigure(); //초기화
+        int figureMax = figureDtos.get(0).getFigure();
 
         for(FigureDto figureDto : figureDtos){
             if(figureDto.getFigure() > figureMax){
@@ -242,7 +220,6 @@ public class ResultService {
                         .tempNumber(figureDto.getTempNumber())
                         .figure(figureDto.getFigure())
                         .message("적합도 결과가 가장 높습니다")
-                        .aiId(figureDto.getAiId())
                         .build();
                 figureMaxDtos.add(figureDto);
             }
@@ -257,7 +234,6 @@ public class ResultService {
                     .tempNumber(randomDto.getTempNumber())
                     .figure(randomDto.getFigure())
                     .message("랜덤으로 추천한 이미지입니다")
-                    .aiId(randomDto.getAiId())
                     .build();
             figureMaxDtos.add(randomDto);
         }

@@ -18,10 +18,10 @@ public class UserResultService {
 
         UserResultDto userResultDto = UserResultDto.builder()
                 .userNumber(userEntity.getUserNumber())
-                .style1(userEntity.getStyle1())
-                .style2(userEntity.getStyle2())
-                .style3(userEntity.getStyle3())
-                .style4(userEntity.getStyle4())
+                .style1(userEntity.getStyle().get(0))
+                .style2(userEntity.getStyle().get(1))
+                .style3(userEntity.getStyle().get(2))
+                .style4(userEntity.getStyle().get(3))
                 .build();
         return userResultDto;
     }

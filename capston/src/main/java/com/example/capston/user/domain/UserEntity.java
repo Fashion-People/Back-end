@@ -31,17 +31,9 @@ public class UserEntity implements UserDetails {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "style_1")
-    private String style1;
-
-    @Column(name = "style_2")
-    private String style2;
-
-    @Column(name = "style_3")
-    private String style3;
-
-    @Column(name = "style_4")
-    private String style4;
+    @Convert(converter = StringListConverter.class)
+    @Column(name = "style")
+    private List<String> style;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ClothesEntity> clothesEntities = new ArrayList<>();
@@ -51,16 +43,13 @@ public class UserEntity implements UserDetails {
     private List<String> roles;
 
     @Builder
-    public UserEntity(Long userNumber, String name, String loginId, String password, String email, String style1, String style2, String style3, String style4, List<String> roles){
+    public UserEntity(Long userNumber, String name, String loginId, String password, String email, List<String> style, List<String> roles){
         this.userNumber = userNumber;
         this.name = name;
         this.loginId = loginId;
         this.password = password;
         this.email = email;
-        this.style1 = style1;
-        this.style2 = style2;
-        this.style3 = style3;
-        this.style4 = style4;
+        this.style = style;
         this.roles = roles;
     }
     //스프링 시큐리티를 위한 설정
@@ -96,14 +85,11 @@ public class UserEntity implements UserDetails {
         return true;
     }
 
-    public void update(String name, String loginId, String email, String style1, String style2, String style3, String style4){
+    public void update(String name, String loginId, String email, List<String> style){
         this.name = name;
         this.loginId = loginId;
         this.email = email;
-        this.style1 = style1;
-        this.style2 = style2;
-        this.style3 = style3;
-        this.style4 = style4;
+        this.style = style;
     }
 
     //사용자의 옷 종류 가져오기
