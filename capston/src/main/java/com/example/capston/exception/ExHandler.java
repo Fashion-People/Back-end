@@ -40,4 +40,10 @@ public class ExHandler {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(ex.getErrorCode().getMessage());
         return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(ImageErrorException.class)
+    public ResponseEntity<?> ImageErrorException(ImageErrorException ex){
+        log.error("이미지 분석 실패");
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(ex.getErrorCode().getMessage());
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+    }
 }

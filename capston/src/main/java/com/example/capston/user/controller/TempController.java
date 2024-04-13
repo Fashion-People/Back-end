@@ -1,6 +1,8 @@
 package com.example.capston.user.controller;
 
 import com.example.capston.config.JwtProvider;
+import com.example.capston.exception.ErrorCode;
+import com.example.capston.exception.ImageErrorException;
 import com.example.capston.outfit.service.OutfitService;
 import com.example.capston.result.domain.FigureEntity;
 import com.example.capston.result.dto.OutfitResultDto;
@@ -19,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,11 +89,15 @@ public class TempController {
         return tempService.callExternalApi(tempRequestDto,token).flatMap(
                 result-> {
                     Long tempNumber = Long.valueOf(jwtProvider.getUsername(token));
-                     return Mono.just(new ResponseEntity<>(resultService.get(tempNumber), HttpStatus.OK));
+                    return Mono.just(new ResponseEntity<>(resultService.get(tempNumber), HttpStatus.OK));
                 }).onErrorResume(
                 error -> {
-                    Long tempNumber = Long.valueOf(jwtProvider.getUsername(token));
-                    return Mono.just(new ResponseEntity<>(resultService.get(tempNumber), HttpStatus.INTERNAL_SERVER_ERROR));
+                    if (error instanceof ImageErrorException) {
+                        return Mono.error(error);
+                    } else {
+                        Long tempNumber = Long.valueOf(jwtProvider.getUsername(token));
+                        return Mono.just(new ResponseEntity<>(resultService.get(tempNumber), HttpStatus.INTERNAL_SERVER_ERROR));
+                    }
                 }).block();
     }
 

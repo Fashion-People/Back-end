@@ -1,6 +1,8 @@
 package com.example.capston.user.service;
 
 import com.example.capston.config.JwtProvider;
+import com.example.capston.exception.ErrorCode;
+import com.example.capston.exception.ImageErrorException;
 import com.example.capston.result.dto.AiRequestDto;
 import com.example.capston.result.dto.FigureDto;
 import com.example.capston.result.service.ResultService;
@@ -46,13 +48,19 @@ public class TempService {
                     .bodyToMono(String.class)
                     .flatMap(responseJson -> {
                         try {
-                            // JSON 문자열을 AiRequestDto 리스트로 변환
-                            List<AiRequestDto> aiRequestDtoList = objectMapper.readValue(responseJson, new TypeReference<List<AiRequestDto>>() {
-                            });
-                            log.info("{}",aiRequestDtoList.get(0).getClothesType());
-                            // AiRequestDto 리스트를 이용하여 결과 계산
-                            List<FigureDto> list = resultService.fit_calculation(aiRequestDtoList, tempResponseDto.getTempNumber());
-                            return Mono.just(list);
+                            if (responseJson.contains("Unidentified image error")){
+                                log.info("오류 발생 : {}", responseJson.toString());
+                                return Mono.error(new ImageErrorException(ErrorCode.IMAGE_NOT_IDENTIFIED));
+                            }
+                            else {
+                                // JSON 문자열을 AiRequestDto 리스트로 변환
+                                List<AiRequestDto> aiRequestDtoList = objectMapper.readValue(responseJson, new TypeReference<List<AiRequestDto>>() {
+                                });
+                                log.info("{}", aiRequestDtoList.get(0).getClothesType());
+                                // AiRequestDto 리스트를 이용하여 결과 계산
+                                List<FigureDto> list = resultService.fit_calculation(aiRequestDtoList, tempResponseDto.getTempNumber());
+                                return Mono.just(list);
+                            }
                         } catch (JsonProcessingException e) {
                             return Mono.error(e);
                         }

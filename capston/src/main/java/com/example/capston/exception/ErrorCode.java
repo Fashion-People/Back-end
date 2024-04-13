@@ -15,7 +15,8 @@ public enum ErrorCode {
     USER_DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "동일한 이메일이 존재합니다"),
     PASSWORD_NOT_MATCHED(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다"),
     UPDATE_NOT_PERMITTED(HttpStatus.UNAUTHORIZED, "수정 불가"),
-    DELETE_NOT_PERMITTED(HttpStatus.FORBIDDEN, "삭제 불가");
+    DELETE_NOT_PERMITTED(HttpStatus.FORBIDDEN, "삭제 불가"),
+    IMAGE_NOT_IDENTIFIED(HttpStatus.BAD_REQUEST, "이미지 분석 실패");
 
     private final HttpStatus status;
     private final String message;
