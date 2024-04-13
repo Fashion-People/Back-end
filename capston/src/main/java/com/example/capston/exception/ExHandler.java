@@ -1,6 +1,7 @@
 package com.example.capston.exception;
 
 import com.example.capston.user.dto.ErrorResponseDto;
+import com.example.capston.user.dto.ImageErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ public class ExHandler {
     @ExceptionHandler(ImageErrorException.class)
     public ResponseEntity<?> ImageErrorException(ImageErrorException ex){
         log.error("이미지 분석 실패");
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto(ex.getErrorCode().getMessage());
-        return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+        ImageErrorResponseDto imageErrorResponseDto = new ImageErrorResponseDto(ex.getErrorCode().getMessage(), ex.getNumber());
+        return new ResponseEntity<>(imageErrorResponseDto, HttpStatus.BAD_REQUEST);
     }
 }

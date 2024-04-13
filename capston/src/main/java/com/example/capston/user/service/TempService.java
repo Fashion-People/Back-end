@@ -10,8 +10,10 @@ import com.example.capston.user.domain.TempEntity;
 import com.example.capston.user.dto.Temp.TempRequestDto;
 import com.example.capston.user.dto.Temp.TempResponseDto;
 import com.example.capston.user.repository.TempRepository;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,9 +50,11 @@ public class TempService {
                     .bodyToMono(String.class)
                     .flatMap(responseJson -> {
                         try {
-                            if (responseJson.contains("Unidentified image error")){
+                            if (responseJson.contains("Unidentified image error")){ //이미지 분석 실패시
+                                JsonNode jsonNode = objectMapper.readTree(responseJson); //json문자열에서 키값 가져오기
+                                int number = jsonNode.get("number").asInt();
                                 log.info("오류 발생 : {}", responseJson.toString());
-                                return Mono.error(new ImageErrorException(ErrorCode.IMAGE_NOT_IDENTIFIED));
+                                return Mono.error(new ImageErrorException(ErrorCode.IMAGE_NOT_IDENTIFIED, number));
                             }
                             else {
                                 // JSON 문자열을 AiRequestDto 리스트로 변환
