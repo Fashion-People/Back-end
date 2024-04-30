@@ -3,6 +3,7 @@ package com.example.capston.user.controller;
 import com.example.capston.config.JwtProvider;
 import com.example.capston.exception.ErrorCode;
 import com.example.capston.exception.ImageErrorException;
+import com.example.capston.exception.InternalServerErrorException;
 import com.example.capston.outfit.service.OutfitService;
 import com.example.capston.result.domain.FigureEntity;
 import com.example.capston.result.dto.OutfitResultDto;
@@ -92,11 +93,10 @@ public class TempController {
                     return Mono.just(new ResponseEntity<>(resultService.get(tempNumber), HttpStatus.OK));
                 }).onErrorResume(
                 error -> {
-                    if (error instanceof ImageErrorException) {
+                    if (error instanceof ImageErrorException) { //이미지 분석 오류
                         return Mono.error(error);
                     } else {
-                        Long tempNumber = Long.valueOf(jwtProvider.getUsername(token));
-                        return Mono.just(new ResponseEntity<>(resultService.get(tempNumber), HttpStatus.INTERNAL_SERVER_ERROR));
+                        return Mono.error(new InternalServerErrorException(ErrorCode.INERNAL_SERVER_ERROR));
                     }
                 }).block();
     }

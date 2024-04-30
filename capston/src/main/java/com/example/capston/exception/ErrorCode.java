@@ -16,6 +16,7 @@ public enum ErrorCode {
     PASSWORD_NOT_MATCHED(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다"),
     UPDATE_NOT_PERMITTED(HttpStatus.UNAUTHORIZED, "수정 불가"),
     DELETE_NOT_PERMITTED(HttpStatus.FORBIDDEN, "삭제 불가"),
+    INERNAL_SERVER_ERROR(HttpStatus.BAD_REQUEST, "서버 오류"),
     IMAGE_NOT_IDENTIFIED(HttpStatus.BAD_REQUEST, "이미지 분석 실패");
 
     private final HttpStatus status;

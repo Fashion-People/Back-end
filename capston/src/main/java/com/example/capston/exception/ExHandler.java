@@ -47,4 +47,10 @@ public class ExHandler {
         ImageErrorResponseDto imageErrorResponseDto = new ImageErrorResponseDto(ex.getErrorCode().getMessage(), ex.getNumber());
         return new ResponseEntity<>(imageErrorResponseDto, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(InternalServerErrorException.class)
+    public ResponseEntity<?> InternalServerErrorException(InternalServerErrorException ex){
+        log.error("내부 서버 오류");
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(ex.getErrorCode().getMessage());
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+    }
 }

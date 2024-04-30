@@ -40,7 +40,7 @@ public class WebClientConfig {
                 );
 
         WebClient webClient =  WebClient.builder()
-                .baseUrl("http://13.125.24.157")
+                .baseUrl("http://43.201.20.219")
                 .exchangeStrategies(exchangeStrategies)
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .filter(logRequest())

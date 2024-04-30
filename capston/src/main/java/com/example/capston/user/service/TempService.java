@@ -10,7 +10,6 @@ import com.example.capston.user.domain.TempEntity;
 import com.example.capston.user.dto.Temp.TempRequestDto;
 import com.example.capston.user.dto.Temp.TempResponseDto;
 import com.example.capston.user.repository.TempRepository;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -40,7 +39,7 @@ public class TempService {
         try {
             // tempResponseDto 객체를 JSON 문자열로 변환
             String json = objectMapper.writeValueAsString(tempResponseDto);
-            log.info("json : {}",json);
+            log.info("json : {}", json);
 
             // webClient를 사용하여 외부 API에 POST 요청 보내기
             return webClient.post()
@@ -50,7 +49,7 @@ public class TempService {
                     .bodyToMono(String.class)
                     .flatMap(responseJson -> {
                         try {
-                            if (responseJson.contains("Unidentified image error")){ //이미지 분석 실패시
+                            if (responseJson.contains("Unidentified image error")) { //이미지 분석 실패시
                                 JsonNode jsonNode = objectMapper.readTree(responseJson); //json문자열에서 키값 가져오기
                                 int number = jsonNode.get("number").asInt();
                                 log.info("오류 발생 : {}", responseJson.toString());
@@ -58,8 +57,7 @@ public class TempService {
                             }
                             else {
                                 // JSON 문자열을 AiRequestDto 리스트로 변환
-                                List<AiRequestDto> aiRequestDtoList = objectMapper.readValue(responseJson, new TypeReference<List<AiRequestDto>>() {
-                                });
+                                List<AiRequestDto> aiRequestDtoList = objectMapper.readValue(responseJson, new TypeReference<List<AiRequestDto>>() {});
                                 log.info("{}", aiRequestDtoList.get(0).getClothesType());
                                 // AiRequestDto 리스트를 이용하여 결과 계산
                                 List<FigureDto> list = resultService.fit_calculation(aiRequestDtoList, tempResponseDto.getTempNumber());

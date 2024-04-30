@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class ResponseDto<T> {
     private T data;
-    private String msg;
+    private String message;
 
-    public ResponseDto(T data, String msg){
+    public ResponseDto(T data, String message){
         this.data = data;
-        this.msg = msg;
+        this.message = message;
     }
 }

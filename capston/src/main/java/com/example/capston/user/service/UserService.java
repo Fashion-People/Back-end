@@ -11,6 +11,7 @@ import com.example.capston.user.domain.UserEntity;
 import com.example.capston.user.dto.User.UserUpdateDto;
 import com.example.capston.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -74,8 +76,10 @@ public class UserService {
     @Transactional
     public Long update(Long userNumber, UserUpdateDto userUpdateDto){
        UserEntity userEntity = userRepository.findById(userNumber).orElseThrow(() -> new NoSuchElementException(""));
-         if(!userEntity.getUsername().equals(userUpdateDto.getName())&&userRepository.existsByLoginId(userUpdateDto.getLoginId())){
-           throw new DuplicateException(ErrorCode.USER_DUPLICATE_LOGINID);
+       log.info("유저 이름 : {}", userEntity.getUsername());
+       log.info("업데이트 유저 이름 : {}", userUpdateDto.getName());
+        if(!userEntity.getName().equals(userUpdateDto.getName())&&userRepository.existsByLoginId(userUpdateDto.getLoginId())){
+            throw new DuplicateException(ErrorCode.USER_DUPLICATE_LOGINID);
         }
         List<String> styles = Arrays.asList(
                 userUpdateDto.getStyle1(),
@@ -83,7 +87,7 @@ public class UserService {
                 userUpdateDto.getStyle3(),
                 userUpdateDto.getStyle4()
         );
-        userEntity.update(userUpdateDto.getLoginId(),userUpdateDto.getName(), userUpdateDto.getEmail(), styles);
+        userEntity.update(userUpdateDto.getName(), userUpdateDto.getLoginId(), userUpdateDto.getEmail(), styles);
         return userNumber;
     }
 
