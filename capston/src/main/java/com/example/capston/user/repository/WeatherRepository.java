@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface WeatherRepository extends JpaRepository<WeatherEntity, Long> {
     List<WeatherEntity> findByDateAndLatitudeAndLongitude(LocalDate today, String latitude, String  longitude);
-    WeatherEntity getByDateAndLatitudeAndLongitude(LocalDate today, String latitude, String  longitude);
+    WeatherEntity getByDateAndLatitudeAndLongitudeAndUserNumber(LocalDate today, String latitude, String  longitude, Long userNumber);
     WeatherEntity getByDateAndUserNumber(LocalDate today, Long userNumber);
-    boolean existsByDateAndLatitudeAndLongitude(LocalDate today, String latitude, String  longitude);
+    boolean existsByDateAndLatitudeAndLongitudeAndUserNumber(LocalDate today, String latitude, String  longitude,Long userNumber);
     boolean existsByDateAndUserNumber(LocalDate today, Long userNumber);
     List<WeatherEntity> findByUserNumberAndDateOrderByWeatherNumberDesc(Long userNumber, LocalDate today);
 }

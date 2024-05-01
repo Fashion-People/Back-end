@@ -1,5 +1,6 @@
 package com.example.capston.user.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,13 +25,14 @@ public class WeatherEntity {
     private double temperature;
     private Long userNumber;
 
-    public WeatherEntity(WeatherEntity weatherEntity){
-        this.date = weatherEntity.getDate();
-        this.latitude = weatherEntity.getLatitude();
-        this.longitude = weatherEntity.getLongitude();
-        this.weather = weatherEntity.getWeather();
-        this.icon = weatherEntity.getIcon();
-        this.temperature = weatherEntity.getTemperature();
-        this.userNumber = weatherEntity.getUserNumber();
+    @Builder
+    public WeatherEntity(String latitude, String longitude, LocalDate date, String weather, String icon, double temperature, Long userNumber){
+        this.date = date;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.weather = weather;
+        this.icon = icon;
+        this.temperature = temperature;
+        this.userNumber = userNumber;
     }
 }

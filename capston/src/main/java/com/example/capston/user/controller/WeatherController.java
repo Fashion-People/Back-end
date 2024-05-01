@@ -25,11 +25,11 @@ public class WeatherController {
     @ApiResponse(code=201, message="상태 출력 성공")
     @GetMapping("/get/condition")
     String get(@RequestHeader("Authentication") String token, @RequestParam String latitude, @RequestParam String longitude){
-        String condition = weatherService.getCondition(latitude,longitude);
         Long userNumber = Long.valueOf(jwtProvider.getUsername(token));
+        String condition = weatherService.getCondition(latitude,longitude, userNumber);
         if(condition == null){
             weatherService.insert(latitude,longitude,userNumber); //저장
-            condition = weatherService.getCondition(latitude,longitude); //상태 가져오기
+            condition = weatherService.getCondition(latitude,longitude, userNumber); //상태 가져오기
         }
         return condition;
     }

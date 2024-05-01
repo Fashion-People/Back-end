@@ -26,8 +26,16 @@ public class WeatherService {
 
     @Transactional
     public void insert(String latitude, String longitude, Long userNumber){ //날씨 저장
-        WeatherEntity weatherDate = getDateWeather(latitude, longitude);
-        weatherDate.setUserNumber(userNumber);
+        WeatherEntity weatherDate = WeatherEntity.builder()
+                .date(getDateWeather(latitude,longitude).getDate())
+                .latitude(getDateWeather(latitude,longitude).getLatitude())
+                .longitude(getDateWeather(latitude,longitude).getLongitude())
+                .weather(getDateWeather(latitude,longitude).getWeather())
+                .icon(getDateWeather(latitude,longitude).getIcon())
+                .temperature(getDateWeather(latitude,longitude).getTemperature())
+                .userNumber(userNumber)
+                .build();
+        
         weatherRepository.save(weatherDate);
     }
 
@@ -38,10 +46,10 @@ public class WeatherService {
     }
 
     @Transactional(readOnly = true)
-    public String getCondition(String latitude, String longitude){ //상태 가져오는 함수-위도,경도 사용
+    public String getCondition(String latitude, String longitude, Long userNumber){ //상태 가져오는 함수-위도,경도 사용
         LocalDate today = LocalDate.now();
-        if(weatherRepository.existsByDateAndLatitudeAndLongitude(today,latitude,longitude)){
-            WeatherEntity weatherEntity = weatherRepository.getByDateAndLatitudeAndLongitude(today,latitude,longitude);
+        if(weatherRepository.existsByDateAndLatitudeAndLongitudeAndUserNumber(today,latitude,longitude,userNumber)){
+            WeatherEntity weatherEntity = weatherRepository.getByDateAndLatitudeAndLongitudeAndUserNumber(today,latitude,longitude,userNumber);
             return weatherEntity.getWeather();
         }
         return null;
