@@ -12,5 +12,5 @@ public interface WeatherRepository extends JpaRepository<WeatherEntity, Long> {
     WeatherEntity getByDateAndUserNumber(LocalDate today, Long userNumber);
     boolean existsByDateAndLatitudeAndLongitude(LocalDate today, String latitude, String  longitude);
     boolean existsByDateAndUserNumber(LocalDate today, Long userNumber);
-    List<WeatherEntity> findByUserNumberAndDateOrderByWeatherNumber(Long userNumber, LocalDate today);
+    List<WeatherEntity> findByUserNumberAndDateOrderByWeatherNumberDesc(Long userNumber, LocalDate today);
 }

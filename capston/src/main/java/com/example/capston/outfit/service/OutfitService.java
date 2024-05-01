@@ -5,11 +5,13 @@ import com.example.capston.result.dto.OutfitResultDto;
 import com.example.capston.outfit.repository.OutfitRepository;
 import com.example.capston.user.service.Weather.WeatherService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OutfitService {
@@ -19,6 +21,7 @@ public class OutfitService {
     @Transactional(readOnly = true)
     public OutfitResultDto getOutfit(Long userNumber){ //outfit 테이블에서 데이터 가져오기
         Double temp= weatherService.getWeather(userNumber);
+        log.info("온도 : {}",temp);
         int temperature = temp.intValue();
         OutfitEntity outfitEntity = outfitRepository.findByTemperatureMinLessThanEqualAndTemperatureMaxGreaterThanEqual(temperature,temperature).orElse(null);
         return OutfitResultDto.toDto(outfitEntity);

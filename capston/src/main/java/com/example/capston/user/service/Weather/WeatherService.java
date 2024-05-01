@@ -51,7 +51,8 @@ public class WeatherService {
     public Double getWeather(Long userNumber) { //날씨 가져오기 - userNumber 사용
         LocalDate today = LocalDate.now(); //현재 날짜 가져오기
         if(weatherRepository.existsByDateAndUserNumber(today,userNumber)) {
-            List<WeatherEntity> weatherEntities =  weatherRepository.findByUserNumberAndDateOrderByWeatherNumber(userNumber, today);
+            List<WeatherEntity> weatherEntities =  weatherRepository.findByUserNumberAndDateOrderByWeatherNumberDesc(userNumber, today);
+            log.info("가져온 날씨 entity : {}",weatherEntities.get(0));
             return weatherEntities.get(0).getTemperature();
         }
         return null;

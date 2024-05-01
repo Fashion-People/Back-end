@@ -6,15 +6,15 @@ import lombok.Getter;
 @Getter
 public class FigureResponseDto {
     Long clothesNumber; //옷 번호
+    String imageUrl; //이미지 url
     int figure; //적합도 수치
     String message; // 메시지
-    Long tempNumber; //이미지 리스트 번호
 
     @Builder
-    public FigureResponseDto(Long clothesNumber, int figure, String message, Long tempNumber){
+    public FigureResponseDto(Long clothesNumber, String imageUrl, int figure, String message){
         this.clothesNumber = clothesNumber;
+        this.imageUrl = imageUrl;
         this.figure = figure;
         this.message = message;
-        this.tempNumber = tempNumber;
     }
 }

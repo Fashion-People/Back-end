@@ -42,10 +42,10 @@ public class ResultService {
         FigureEntity figure = figureRepository.findByTempNumberOrderByIdDesc(tempNumber).get(0);
 
         FigureResponseDto figureResponseDto = FigureResponseDto.builder()
+                .clothesNumber(figure.getClothesNumber())
                 .figure(figure.getFigure())
                 .message(figure.getMessage())
-                .clothesNumber(figure.getClothesNumber())
-                .tempNumber(figure.getTempNumber())
+                .imageUrl(figure.getImageUrl())
                 .build();
         return figureResponseDto;
     }
@@ -67,7 +67,8 @@ public class ResultService {
         //리스트에 담긴 figureResponseDto를 entity로 저장
         for(FigureDto figureDto : result){
             FigureEntity figure = FigureEntity.builder()
-                    .clothesNumber(figureDto.getClothesNumber())
+                    .clothesNumber(figureDto.getClothesNumber()-1L)
+                    .imageUrl(figureDto.getImageUrl())
                     .message(figureDto.getMessage())
                     .figure(figureDto.getFigure())
                     .tempNumber(figureDto.getTempNumber())
@@ -107,6 +108,7 @@ public class ResultService {
             figureDto = FigureDto.builder()
                     .clothesNumber(aiRequestDto.getClothesNumber())
                     .tempNumber(aiRequestDto.getTempNumber())
+                    .imageUrl(aiRequestDto.getImageUrl())
                     .figure(figure)
                     .message("추천합니다")
                     .build();
@@ -115,6 +117,7 @@ public class ResultService {
             figureDto = FigureDto.builder()
                     .clothesNumber(aiRequestDto.getClothesNumber())
                     .tempNumber(aiRequestDto.getTempNumber())
+                    .imageUrl(aiRequestDto.getImageUrl())
                     .figure(figure)
                     .message("보통입니다")
                     .build();
@@ -123,6 +126,7 @@ public class ResultService {
             figureDto = FigureDto.builder()
                     .clothesNumber(aiRequestDto.getClothesNumber())
                     .tempNumber(aiRequestDto.getTempNumber())
+                    .imageUrl(aiRequestDto.getImageUrl())
                     .figure(figure)
                     .message("비추천합니다")
                     .build();
@@ -175,6 +179,7 @@ public class ResultService {
                 figureDto = FigureDto.builder()
                         .clothesNumber(aiRequestDto.getClothesNumber())
                         .tempNumber(aiRequestDto.getTempNumber())
+                        .imageUrl(aiRequestDto.getImageUrl())
                         .figure(figure)
                         .message("추천합니다")
                         .build();
@@ -183,6 +188,7 @@ public class ResultService {
                 figureDto = FigureDto.builder()
                         .clothesNumber(aiRequestDto.getClothesNumber())
                         .tempNumber(aiRequestDto.getTempNumber())
+                        .imageUrl(aiRequestDto.getImageUrl())
                         .figure(figure)
                         .message("보통입니다")
                         .build();
@@ -191,6 +197,7 @@ public class ResultService {
                 figureDto = FigureDto.builder()
                         .clothesNumber(aiRequestDto.getClothesNumber())
                         .tempNumber(aiRequestDto.getTempNumber())
+                        .imageUrl(aiRequestDto.getImageUrl())
                         .figure(figure)
                         .message("비추천합니다")
                         .build();
@@ -218,6 +225,7 @@ public class ResultService {
                 figureDto = FigureDto.builder()
                         .clothesNumber(figureDto.getClothesNumber())
                         .tempNumber(figureDto.getTempNumber())
+                        .imageUrl(figureDto.getImageUrl())
                         .figure(figureDto.getFigure())
                         .message("적합도 결과가 가장 높습니다")
                         .build();
@@ -232,6 +240,7 @@ public class ResultService {
             randomDto = FigureDto.builder()
                     .clothesNumber(randomDto.getClothesNumber())
                     .tempNumber(randomDto.getTempNumber())
+                    .imageUrl(randomDto.getImageUrl())
                     .figure(randomDto.getFigure())
                     .message("랜덤으로 추천한 이미지입니다")
                     .build();
