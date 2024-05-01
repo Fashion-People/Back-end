@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,7 +79,7 @@ public class TempController {
                 .style3(userStyle.get(2))
                 .style4(userStyle.get(3))
                 .build();
-        OutfitResultDto outfitResultDto = outfitService.getOutfit(tempRequestDto.getLatitude(), tempRequestDto.getLongitude());
+        OutfitResultDto outfitResultDto = outfitService.getOutfit(userNumber);
         log.info("현재 날씨에 맞는 기온별 옷차림 데이터와 사용자의 취향 4개 저장");
         resultService.save(userResultDto, outfitResultDto);
 

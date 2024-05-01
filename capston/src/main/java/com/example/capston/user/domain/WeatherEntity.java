@@ -22,6 +22,7 @@ public class WeatherEntity {
     private String weather;
     private String icon;
     private double temperature;
+    private Long userNumber;
 
     public WeatherEntity(WeatherEntity weatherEntity){
         this.date = weatherEntity.getDate();
@@ -30,5 +31,6 @@ public class WeatherEntity {
         this.weather = weatherEntity.getWeather();
         this.icon = weatherEntity.getIcon();
         this.temperature = weatherEntity.getTemperature();
+        this.userNumber = weatherEntity.getUserNumber();
     }
 }

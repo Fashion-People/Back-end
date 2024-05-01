@@ -17,8 +17,8 @@ public class OutfitService {
     private final WeatherService weatherService;
 
     @Transactional(readOnly = true)
-    public OutfitResultDto getOutfit(String latitude, String longitude){
-        Double temp= weatherService.getWeather(latitude, longitude);
+    public OutfitResultDto getOutfit(Long userNumber){ //outfit 테이블에서 데이터 가져오기
+        Double temp= weatherService.getWeather(userNumber);
         int temperature = temp.intValue();
         OutfitEntity outfitEntity = outfitRepository.findByTemperatureMinLessThanEqualAndTemperatureMaxGreaterThanEqual(temperature,temperature).orElse(null);
         return OutfitResultDto.toDto(outfitEntity);

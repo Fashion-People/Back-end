@@ -25,8 +25,9 @@ public class WeatherService {
     private final ApiService apiService;
 
     @Transactional
-    public void insert(String latitude, String longitude){
+    public void insert(String latitude, String longitude, Long userNumber){ //날씨 저장
         WeatherEntity weatherDate = getDateWeather(latitude, longitude);
+        weatherDate.setUserNumber(userNumber);
         weatherRepository.save(weatherDate);
     }
 
@@ -37,7 +38,7 @@ public class WeatherService {
     }
 
     @Transactional(readOnly = true)
-    public String getCondition(String latitude, String longitude){
+    public String getCondition(String latitude, String longitude){ //상태 가져오는 함수-위도,경도 사용
         LocalDate today = LocalDate.now();
         if(weatherRepository.existsByDateAndLatitudeAndLongitude(today,latitude,longitude)){
             WeatherEntity weatherEntity = weatherRepository.getByDateAndLatitudeAndLongitude(today,latitude,longitude);
@@ -47,11 +48,11 @@ public class WeatherService {
     }
 
     @Transactional(readOnly = true)
-    public Double getWeather(String latitude, String longitude) {
+    public Double getWeather(Long userNumber) { //날씨 가져오기 - userNumber 사용
         LocalDate today = LocalDate.now(); //현재 날짜 가져오기
-        if(weatherRepository.existsByDateAndLatitudeAndLongitude(today,latitude,longitude)) {
-            WeatherEntity weatherEntity =  weatherRepository.getByDateAndLatitudeAndLongitude(today,latitude,longitude);
-            return weatherEntity.getTemperature();
+        if(weatherRepository.existsByDateAndUserNumber(today,userNumber)) {
+            List<WeatherEntity> weatherEntities =  weatherRepository.findByUserNumberAndDateOrderByWeatherNumber(userNumber, today);
+            return weatherEntities.get(0).getTemperature();
         }
         return null;
     }
