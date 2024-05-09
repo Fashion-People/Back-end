@@ -1,6 +1,7 @@
 package com.example.capston.user.service.Weather;
 
 import com.example.capston.user.domain.WeatherEntity;
+import com.example.capston.user.dto.WeatherResponseDto;
 import com.example.capston.user.repository.WeatherRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,15 +28,16 @@ public class WeatherService {
     @Transactional
     public void insert(String latitude, String longitude, Long userNumber){ //날씨 저장
         WeatherEntity weatherDate = WeatherEntity.builder()
-                .date(getDateWeather(latitude,longitude).getDate())
-                .latitude(getDateWeather(latitude,longitude).getLatitude())
-                .longitude(getDateWeather(latitude,longitude).getLongitude())
-                .weather(getDateWeather(latitude,longitude).getWeather())
-                .icon(getDateWeather(latitude,longitude).getIcon())
-                .temperature(getDateWeather(latitude,longitude).getTemperature())
+                .date(getDateWeather(latitude,longitude,userNumber).getDate())
+                .latitude(getDateWeather(latitude,longitude,userNumber).getLatitude())
+                .longitude(getDateWeather(latitude,longitude,userNumber).getLongitude())
+                .weather(getDateWeather(latitude,longitude,userNumber).getWeather())
+                .windChillfactor(getDateWeather(latitude,longitude,userNumber).getWindChillfactor())
+                .temperature(getDateWeather(latitude,longitude,userNumber).getTemperature())
+                .humidity(getDateWeather(latitude,longitude,userNumber).getHumidity())
                 .userNumber(userNumber)
                 .build();
-        
+
         weatherRepository.save(weatherDate);
     }
 
@@ -46,11 +48,17 @@ public class WeatherService {
     }
 
     @Transactional(readOnly = true)
-    public String getCondition(String latitude, String longitude, Long userNumber){ //상태 가져오는 함수-위도,경도 사용
+    public WeatherResponseDto getCondition(String latitude, String longitude, Long userNumber){ //상태 가져오는 함수-위도,경도 사용
         LocalDate today = LocalDate.now();
         if(weatherRepository.existsByDateAndLatitudeAndLongitudeAndUserNumber(today,latitude,longitude,userNumber)){
             WeatherEntity weatherEntity = weatherRepository.getByDateAndLatitudeAndLongitudeAndUserNumber(today,latitude,longitude,userNumber);
-            return weatherEntity.getWeather();
+            WeatherResponseDto weatherResponseDto = WeatherResponseDto.builder()
+                    .weather(weatherEntity.getWeather())
+                    .windChillfactor(weatherEntity.getWindChillfactor())
+                    .temperature(weatherEntity.getTemperature())
+                    .humidity(weatherEntity.getHumidity())
+                    .build();
+            return weatherResponseDto;
         }
         return null;
     }
@@ -66,10 +74,10 @@ public class WeatherService {
         return null;
     }
 
-    private WeatherEntity getDateWeather(String latitude, String  longitude) {
+    private WeatherEntity getDateWeather(String latitude, String  longitude, Long userNumber) {
         LocalDate today = LocalDate.now(); //현재 날짜 가져오기
         log.info("DB에서 date, latitude, longitude를 기반으로 날씨 정보 가져오기");
-        List<WeatherEntity> dateWeatherListFromDB = weatherRepository.findByDateAndLatitudeAndLongitude(today, latitude,longitude);
+        List<WeatherEntity> dateWeatherListFromDB = weatherRepository.findByDateAndLatitudeAndLongitudeAndUserNumber(today, latitude,longitude, userNumber);
         if (dateWeatherListFromDB.isEmpty()) { //해당 날짜에 대한 날씨 정보가 없으면
             return getWeatherFromApi(latitude, longitude); //새로운 API를 호출해서 날씨 정보 가져오기
         } else {
@@ -89,8 +97,9 @@ public class WeatherService {
         weather.setLongitude(longitude);
         log.info("경도 값 : {}",longitude);
         weather.setWeather(parsedWeather.get("main").toString());
-        weather.setIcon(parsedWeather.get("icon").toString());
         weather.setTemperature(Math.round((((Double) parsedWeather.get("temp"))-273.0))*10/10.0);
+        weather.setWindChillfactor(Math.round((((Double) parsedWeather.get("feels_like"))-273.0))*10/10.0);
+        weather.setHumidity((Long) parsedWeather.get("humidity"));
         return weather;
     }
 
@@ -113,12 +122,13 @@ public class WeatherService {
         log.info("온도 값 파싱");
         JSONObject mainData = (JSONObject) jsonObject.get("main");
         resultMap.put("temp", mainData.get("temp"));
+        resultMap.put("feels_like", mainData.get("feels_like"));
+        resultMap.put("humidity", mainData.get("humidity"));
 
         log.info("날씨 값 파싱");
         JSONArray weatherArray = (JSONArray) jsonObject.get("weather");
         JSONObject weatherData = (JSONObject) weatherArray.get(0);
         resultMap.put("main", weatherData.get("main"));
-        resultMap.put("icon", weatherData.get("icon"));
 
         return resultMap;
     }

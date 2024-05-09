@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface WeatherRepository extends JpaRepository<WeatherEntity, Long> {
-    List<WeatherEntity> findByDateAndLatitudeAndLongitude(LocalDate today, String latitude, String  longitude);
+    List<WeatherEntity> findByDateAndLatitudeAndLongitudeAndUserNumber(LocalDate today, String latitude, String  longitude,Long userNumber);
     WeatherEntity getByDateAndLatitudeAndLongitudeAndUserNumber(LocalDate today, String latitude, String  longitude, Long userNumber);
     WeatherEntity getByDateAndUserNumber(LocalDate today, Long userNumber);
     boolean existsByDateAndLatitudeAndLongitudeAndUserNumber(LocalDate today, String latitude, String  longitude,Long userNumber);

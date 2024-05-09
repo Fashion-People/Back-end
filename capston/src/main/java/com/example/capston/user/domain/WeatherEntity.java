@@ -20,19 +20,21 @@ public class WeatherEntity {
     private String latitude;
     private String longitude;
     private LocalDate date;
-    private String weather;
-    private String icon;
-    private double temperature;
+    private String weather; //날씨 상태
+    private double windChillfactor;
+    private double temperature; //온도
+    private Long humidity; //습도
     private Long userNumber;
 
     @Builder
-    public WeatherEntity(String latitude, String longitude, LocalDate date, String weather, String icon, double temperature, Long userNumber){
+    public WeatherEntity(String latitude, String longitude, LocalDate date, String weather, double windChillfactor ,double temperature, Long humidity, Long userNumber){
         this.date = date;
         this.latitude = latitude;
         this.longitude = longitude;
         this.weather = weather;
-        this.icon = icon;
+        this.windChillfactor = windChillfactor;
         this.temperature = temperature;
+        this.humidity = humidity;
         this.userNumber = userNumber;
     }
 }
